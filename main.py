@@ -302,7 +302,7 @@ class Page_second(object):
         self.label_7.setText(_translate("Form", "Young\'s modulus :"))
         self.label_8.setText(_translate("Form", "CTE :"))
         self.label_9.setText(_translate("Form", "Poisson\'s ratio : "))
-        self.label_10.setText(_translate("Form", "Ref. Temperature : "))
+        self.label_10.setText(_translate("Form", "Density : "))
 
         # create dictionarys to collect parameters
         self.dict_thickness = {} 
@@ -313,6 +313,7 @@ class Page_second(object):
         self.dict_ex = {}    # young's modulus
         self.dict_prxy = {}  # poisson ratio 
         self.dict_ctex = {}  # CTE 
+        self.dict_density = {}
 
 
         # this is for click action
@@ -329,6 +330,7 @@ class Page_second(object):
         self.dict_ex["mat_ex_"+str(self.comboBox.currentText())] = self.lineEdit_5.text()  # young's modulus
         self.dict_prxy["mat_prxy_"+str(self.comboBox.currentText())] = self.lineEdit_6.text()  # poisson ratio
         self.dict_ctex["mat_ctex_"+str(self.comboBox.currentText())] = self.lineEdit_7.text()  # CTE
+        self.dict_density["mat_ctex_"+str(self.comboBox.currentText())] = self.lineEdit_8.text() # density
 
 
 
@@ -370,6 +372,13 @@ class Page_second(object):
             file.write("!CTE\n")
             for key, value in self.dict_ctex.items():
                 file.write(str(key)+"="+str(value)+"\n")
+
+            file.write("!Density\n")
+            for key, value in self.dict_density.items():
+                if value:
+                    file.write(str(key)+"="+str(value)+"\n")
+            
+
 
         
         self.w = MyWindow_3(num_layer=str(self.num_layer))
@@ -420,9 +429,13 @@ class Page_third(object):
 
         # this is for click action
         self.pushButton_2.clicked.connect(self.toPage_2)
+        #self.pushButton_3.clicked.connect(self.run)
 
 
-
+    
+    # def run(self):
+    #     os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\main.inp" -o "C:\Users\user\Desktop\pyqt_ansys\test.out')
+    #     os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys\test" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\test\eq_CTE_0222_SiNx_thickness_0.8" -o "C:\Users\user\Desktop\pyqt_ansys\test\test.out')
     def toPage_2(self):
         self.w = MyWindow_2(num_layer=str(self.num_layer))
         self.w.show()
@@ -441,6 +454,8 @@ class MyWindow_2(QMainWindow, Page_second):
         super(MyWindow_2, self).__init__(parent)
         self.num_layer = num_layer
         self.setupUi(self)
+        
+        self.comboBox.addItem("glass")
         for i in range(int(self.num_layer)):
             self.comboBox.addItem(str(i+1))
 
@@ -468,4 +483,3 @@ question
 1. ehance strain in P1, what is this parameter?
 2. Ref temperature in P2 
 '''
-
