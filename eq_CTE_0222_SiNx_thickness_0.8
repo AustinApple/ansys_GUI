@@ -1,0 +1,921 @@
+finish
+/clear
+/prep7
+/nerr,,99999999
+!et,1,SHELL281
+et,1,solid185
+!KEYOPT,1,2,2   divergence yes or no
+
+
+!define panel G3.5
+panel_width=620
+panel_length=750
+
+!define the layer thickness
+!----------! 
+
+glass_thickness = 1.1
+SiNx_thickness=0.8e-3
+!
+t1=glass_thickness !Glass for T2X_1
+t2=SiNx_thickness  !SiNx_thickness
+
+t3=0.6e-3  !Release_layer
+
+
+t4=7e-3    !UBM
+t5=4e-3    !UBM_D1
+t6=4e-3    !RDL1
+t7=3e-3    !RDL1_D1
+t8=4e-3    !RDL2
+t9=3e-3    !RDL2_D1
+t10=4e-3    !RDL3
+t11=3e-3   !RDL3_D1
+t12=3e-3   !RDL4
+
+
+!----------! Total thickness
+!z0=(t1+t2+t3+t4+t5+t6+t7+t8+t9+t10+t11+t12)
+z1=(t1+t2+t3+t4+t5+t6)
+z2=(t7+t8+t9+t10+t11+t12)
+z0=z1+z2
+
+
+!----------! Z-direction 1/4 panel
+blc4,0,0,panel_width/2,panel_length/2,z0
+save
+!------------------Cut-Z_direction ------------------------!
+wpcsys,,0
+*do,i,1,11,1
+!*do,i,1,12,1
+	wpoffs,0,0,t%i%
+	vsbw,all
+*enddo
+!--------Z direction mesh_grid-----!
+csys,0
+wpcsys,,0
+!lsel,s,length,,t13
+!lesize,all,,,1
+lsel,s,length,,t12
+lesize,all,,,1
+lsel,s,length,,t11
+lesize,all,,,1
+lsel,s,length,,t10
+lesize,all,,,1
+lsel,s,length,,t9
+lesize,all,,,1
+lsel,s,length,,t8
+lesize,all,,,1
+lsel,s,length,,t7
+lesize,all,,,1
+lsel,s,length,,t6
+lesize,all,,,1
+lsel,s,length,,t5
+lesize,all,,,1
+lsel,s,length,,t4
+lesize,all,,,1
+lsel,s,length,,t3
+lesize,all,,,1
+lsel,s,length,,t2
+lesize,all,,,1
+lsel,s,length,,t1
+lesize,all,,,22
+
+!--------XY-direction -------!
+lsel,s,length,,panel_width/2
+!lesize,all,,,panel_width/2/10
+!lesize,all,,,panel_width/2/5
+lesize,all,,,100
+allsel
+lsel,s,length,,panel_length/2
+!lesize,all,,,panel_length/2/10
+!lesize,all,,,panel_length/2/5
+lesize,all,,,100
+allsel
+
+
+!----------!volume_name
+!glass !t1
+vsel,s,loc,z,0,t1  
+cm,glass,volu
+
+!SiNx  !t2
+vsel,s,loc,z,t1,(t1+t2) 
+cm,SiNx,volu
+
+!release_layer !t3
+vsel,s,loc,z,(t1+t2),(t1+t2+t3) 
+cm,release_layer,volu
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  RDL 1 (t4~t5)
+!UBM
+vsel,s,loc,z,(t1+t2+t3),(t1+t2+t4)
+cm,UBM,volu
+!UBM_D1
+vsel,s,loc,z,(t1+t2+t3+t4),(t1+t2+t3+t4+t5)
+cm,UBM_D1,volu
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!RDL 2  (t6~t7)
+!RDL2
+vsel,s,loc,z,(t1+t2+t3+t4+t5),z1
+cm,RDL2,volu
+!RDL2_D2
+vsel,s,loc,z,z1,z1+t7
+cm,RDL2_D2,volu
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!RDL 3  (t8~t9)
+!RDL3
+vsel,s,loc,z,(z1+t7),(z1+t7+t8)
+cm,RDL3,volu
+!RDL3_D3
+vsel,s,loc,z,(z1+t7+t8),(z1+t7+t8+t9)
+cm,RDL3_D3,volu
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!RDL 4  (t10~t11)
+!RDL4
+vsel,s,loc,z,(z1+t7+t8+t9),(z1+t7+t8+t9+t10)
+cm,RDL4,volu
+!RDL4_D4
+vsel,s,loc,z,(z1+t7+t8+t9+t10),(z1+t7+t8+t9+t10+t11)
+cm,RDL4_D4,volu
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!RM5  (t12)
+vsel,s,loc,z,(z1+t7+t8+t9+t10+t11),(z1+t7+t8+t9+t10+t11+t12)
+cm,RM5,volu
+allsel
+
+
+!!!!!!!!!!! material !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!glass 1
+mp,reft,1,230      ! Defines a linear material property as a constant or 
+                   ! a function of temperature
+                   ! reft : reference temperature. Must be defined as a constant
+mp,  ex,1,70e3     !!!!!!!!!! equivalent with SiNx  (T2X_1 and SiNx)
+mp,prxy,1,0.28     ! major Poisson's ratios (also PRYZ, PRXZ) 
+mp,ctex,1,9.1e-6   ! instantaneous coefficients of thermal expansion  Unit : (1/c) 
+                   ! (also CTEY, CTEZ)
+
+!SiNx 2_1   ! 參考paper
+mp,reft,21,320
+mp,  ex,21,147.78e3     ! @25度
+mp,prxy,21,0.28
+mp,ctex,21,2.11e-6   ! 
+
+
+!relaese_layer 2   ! 參考paper
+mp,reft,2,230
+mp,  ex,2,5e3     ! @25度
+mp,prxy,2,0.28
+mp,ctex,2,60e-6   ! 
+
+
+!UBM 3 UBM+PI 佔比各50%  Asahi 0.7695 + Cu 0.2305
+!mp,reft,3,230
+!mp,  ex,3,17.978e3
+!mp,prxy,3,0.35
+!mp,ctex,3,20.18e-6  ! ITRI method
+
+mp,reft,3,230
+mp,  ex,3,17.978e3
+mp,prxy,3,0.35
+mp,ctex,3,19.24e-6  ! ITRI method
+
+
+
+
+
+!UBM_D1 401 純PI   !for Asahi 
+mp,reft,401,230
+mp,  ex,401,3.1e3
+mp,prxy,401,0.28
+mp,ctex,401,41e-6
+
+!RDL2 5  RDL1+PI  佔比各48.49% 
+!mp,reft,5,230
+!mp,  ex,5,34.4e3
+!mp,prxy,5,0.35
+!mp,ctex,5,18.11e-6  ! ITRI method
+
+mp,reft,5,230
+mp,  ex,5,34.4e3
+mp,prxy,5,0.35
+mp,ctex,5,17.86e-6  ! ITRI method
+
+!RDL2_D2 純PI
+mp,reft,601,230
+mp,  ex,601,3.1e3
+mp,prxy,601,0.28
+mp,ctex,601,41e-6
+
+
+!RDL3 7   RDL2+PI  佔比各44.42%
+!mp,reft,7,230
+!mp,  ex,7,31.77e3
+!mp,prxy,7,0.35
+!mp,ctex,7,18.30e-6   ! ITRI method
+
+mp,reft,7,230
+mp,  ex,7,31.77e3
+mp,prxy,7,0.35
+mp,ctex,7,18.05e-6   ! ITRI method
+
+!RDL3_D3  純PI
+mp,reft,801,230
+mp,  ex,801,3.1e3
+mp,prxy,801,0.28
+mp,ctex,801,41e-6
+
+
+!RDL4 9    RDL3+PI  佔比各43.530%
+!mp,reft,9,230
+!mp,  ex,9,31.198e3
+!mp,prxy,9,0.35
+!mp,ctex,9,18.34e-6   ! ITRI method
+
+mp,reft,9,230
+mp,  ex,9,31.198e3
+mp,prxy,9,0.35
+mp,ctex,9,18.09e-6   ! ITRI method
+
+!RDL4_D4 純PI
+mp,reft,1011,230
+mp,  ex,1011,3.1e3
+mp,prxy,1011,0.3
+mp,ctex,1011,41e-6
+
+!RM5   11    RDL4+PI  佔比各9.07%
+mp,reft,11,230
+mp,  ex,11,8.954e3
+mp,prxy,11,0.35
+mp,ctex,11,24.554e-6   ! ITRI method
+
+
+!!! 轉換CTE材料參數
+!allsel
+!esel,s,mat,,301
+!mpchg,3,all
+!allsel
+!!!!
+
+
+
+
+!----------!
+cmsel,s,glass,volu    ! selects a subset of components and assmblies !volu --Select the volume components only
+type,1
+mat,1
+mshape,0
+!0----Mesh with quadrilateral-shaped elements when Dimension = 2-D mesh with hexahedral-shaped elements when Dimension
+mshkey,1
+!1----Use mapped meshing.
+vmesh,all
+allsel
+
+cmsel,s,SiNx,volu
+type,1
+mat,21
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,release_layer,volu
+type,1
+mat,2
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,UBM,volu
+type,1
+mat,3
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,UBM_D1,volu
+type,1
+mat,401
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL2,volu
+type,1
+mat,5
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL2_D2,volu
+type,1
+mat,601
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL3,volu
+type,1
+mat,7
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL3_D3,volu
+type,1
+mat,801
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL4,volu
+type,1
+mat,9
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RDL4_D4,volu
+type,1
+mat,1011
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+
+cmsel,s,RM5,volu
+type,1
+mat,11
+mshape,0
+mshkey,1
+vmesh,all
+allsel
+save
+!cmsel,s,RDL4_D1,volu
+!type,1
+!mat,1211
+!mshape,0
+!mshkey,1
+!vmesh,all
+!allsel
+!save
+
+
+
+!!!!!!!!!!!!! solve !!!!!!!!!!!!!!!!!!!!
+
+
+csys,0                     !Activates a previously defined coordinate system
+wpcsys,,0                  !Defines the working plane location based on a coordinate system
+nsel,s,loc,x,0             !Selects a subset of nodes
+d,all,ux,0                 !Defines degree-of-freedom constraints at nodes
+
+nsel,s,loc,y,0
+d,all,uy,0
+
+nsel,s,loc,z,0  ! s: select a new set (default)
+nsel,r,loc,x,0  ! r: eselect a set from the current set
+                ! loc,	X, Y, Z	X, Y, or Z location in the active coordinate system.
+nsel,r,loc,y,0
+d,all,uz,0      ! defines degree-of-freedom constraints at nodes
+
+allsel
+finish
+
+!----------!
+
+/solu
+outres,all,last  ! Controls the solution data written to the database
+estif,1e-6       ! specifies the matrix multiplier for deactivated elements
+nropt,full       ! specifies the Newton-Raphson options in a static or full transient analysis.
+nlgeom,on        ! large deformation
+autots,on        ! specifies whether to use automatic time stepping or load stepping
+neqit,100        ! specifies the maximum number of equilibrium iterations for nonlinear analyses
+EQSLV,SPARSE     ! specifies the type of equation solver
+antype,0         ! specifies the analysis type and restart status.
+                 ! 0 : perform a static analysis. Valid for all degrees of freedom
+nsubst,,100000,1 ! specifies the number of substeps to be taken this load step.
+kbc,0            ! specifies ramped or stepped loading within a load step
+                 !0 : Loads are linearly interpolated (ramped) for each substep 
+                 !    from the values of the previous load step to the values of
+                 !    this load step. This is the default value.
+
+
+!live death model
+!
+time,1
+allsel           ! selects all entities with a single command.
+ekill,all        ! deactivates an element (for the birth and death capability)
+                 ! Element to be deactivated. If ALL, deactivate all selected elements [ESEL]. 
+                 ! If ELEM = P, graphical picking is enabled and all remaining command fields 
+                 ! are ignored (valid only in the GUI). 
+             
+esel,s,cent,z,0,(t1+t2)  !Selects a subset of elements 
+                         ! s : Select a new set (default)
+                         ! cent :　X, Y, or Z location in the active coordinate system.
+                         ! Z : component of the item (if required). Valid component labels 
+                         
+ealive,all               ! reactivates an element (for the birth and death capability) 
+
+!!!
+glass_b_T2X_1=-0.00002401
+allsel
+esel,s,mat,,1
+bfe,all,forc,1,,,glass_b_T2X_1
+!!!!!
+
+allsel
+tunif,320                ! assigns a uniform temperature to all nodes
+solve
+
+time,2
+allsel
+tunif,250
+solve
+
+time,3
+allsel
+tunif,175
+solve
+
+time,4
+allsel
+tunif,150
+solve
+
+time,5
+allsel
+tunif,75
+solve
+
+time,6
+allsel
+tunif,25
+solve
+
+time,7
+allsel
+tunif,50
+solve
+
+time,8
+allsel
+tunif,100
+solve
+
+time,9
+allsel
+tunif,150
+solve
+
+time,10
+allsel
+tunif,200
+solve
+
+time,11
+allsel
+tunif,230
+solve
+
+!溫度230 選擇glass+SiNx+PI(release layer) 溫度230-25
+!!!!!!!!!!!!!!!!!  升溫至230
+
+time,12
+allsel
+ekill,all
+
+esel,s,cent,z,0,(t1+t2+t3)
+ealive,all
+allsel
+tunif,230
+solve
+
+time,13
+allsel
+tunif,200
+solve
+
+time,14
+allsel
+tunif,150
+solve
+
+time,15
+allsel
+tunif,100
+solve
+
+time,16
+allsel
+tunif,50
+solve
+
+time,17
+allsel
+tunif,25
+solve
+
+!選擇glass++SiNx+PI(release layer) 溫度25-230(25~230)
+
+time,18
+allsel
+tunif,50
+solve
+
+time,19
+allsel
+tunif,100
+solve
+
+time,20
+allsel
+tunif,150
+solve
+
+time,21
+allsel
+tunif,200
+solve
+
+time,22
+allsel
+tunif,230
+solve
+
+!選擇glass++SiNx+PI(release layer)+BS_UBM_PI+PI 溫度230-25
+
+time,23
+allsel,all
+ekill,all
+
+esel,s,cent,z,0,(t1+t2+t3+t4+t5)
+ealive,all
+allsel
+tunif,230
+solve
+
+time,24
+allsel
+tunif,200
+solve
+
+time,25
+allsel
+tunif,150
+solve
+
+time,26
+allsel
+tunif,100
+solve
+
+time,27
+allsel
+tunif,50
+solve
+
+time,28
+allsel
+tunif,25
+solve
+
+!選擇glass++SiNx+PI(release layer)+BS_UBM_PI 溫度25-230
+
+time,29
+allsel
+tunif,50
+solve
+
+time,30
+allsel
+tunif,100
+solve
+
+time,31
+allsel
+tunif,150
+solve
+
+time,32
+allsel
+tunif,200
+solve
+
+time,33
+allsel
+tunif,230
+solve
+
+!選擇glass++SiNx+PI(release layer)+BS_UBM_PI+PI+RDL_P2+P2 溫度230-25
+
+time,34
+allsel,all
+ekill,all
+esel,s,cent,z,0,(t1+t2+t3+t4+t5+t6+t7)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+cmsel,s,UBM,volu  !!! 等效RDL1 CTE材料!
+mat,5
+allsel
+cmsel,s,RDL2,volu  !!! 等效RDL2 CTE材料
+mat,3
+allsel
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ealive,all
+allsel
+tunif,230
+solve
+
+time,35
+allsel
+tunif,200
+solve
+
+time,36
+allsel
+tunif,150
+solve
+
+time,37
+allsel
+tunif,100
+solve
+
+time,38
+allsel
+tunif,50
+solve
+
+time,39
+allsel
+tunif,25
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2) 溫度25-230
+
+time,40
+allsel
+tunif,50
+solve
+
+time,41
+allsel
+tunif,100
+solve
+
+time,42
+allsel
+tunif,150
+solve
+
+time,43
+allsel
+tunif,200
+solve
+
+time,44
+allsel
+tunif,230
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2)+(RDL3_PI+P3) 溫度230-25
+!
+time,45
+allsel,all
+ekill,all
+esel,s,cent,z,0,(t1+t2+t3+t4+t5+t6+t7+t8+t9)
+cmsel,s,UBM,volu  !!! 等效RDL1 CTE材料!
+mat,7
+allsel
+cmsel,s,RDL2,volu  !!! 等效RDL2 CTE材料
+mat,5
+allsel
+cmsel,s,RDL3,volu  !!! 等效RDL3 CTE材料
+mat,3
+allsel
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ealive,all
+allsel
+tunif,230
+solve
+
+time,46
+allsel
+tunif,200
+solve
+
+time,47
+allsel
+tunif,150
+solve
+
+time,48
+allsel
+tunif,100
+solve
+
+time,49
+allsel
+tunif,50
+solve
+
+time,50   
+allsel
+tunif,25
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2)+(RDL3_PI+P3) 溫度230-25
+
+time,51
+allsel
+tunif,50
+solve
+
+time,52
+allsel
+tunif,100
+solve
+
+time,53
+allsel
+tunif,150
+solve
+
+time,54
+allsel
+tunif,200
+solve
+
+time,55
+allsel
+tunif,230
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2)+(RDL3_PI+P3)+(RDL4_PI+P4) 溫度230-25
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+time,56
+allsel,all
+ekill,all
+esel,s,cent,z,0,(z1+t7+t8+t9+t10+t11)
+!!!
+cmsel,s,UBM,volu  !!! 等效RDL1 CTE材料!
+mat,9
+allsel
+cmsel,s,RDL2,volu  !!! 等效RDL2 CTE材料
+mat,7
+allsel
+cmsel,s,RDL3,volu  !!! 等效RDL3 CTE材料
+mat,5
+allsel
+cmsel,s,RDL4,volu  !!! 等效RDL4 CTE材料
+mat,3
+allsel
+!!!
+ealive,all
+allsel
+tunif,230
+solve
+
+time,57
+allsel
+tunif,200
+solve
+
+time,58
+allsel
+tunif,150
+solve
+
+time,59
+allsel
+tunif,100
+solve
+
+time,60
+allsel
+tunif,50
+solve
+
+time,61   !!! final
+allsel
+tunif,25
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2)+(RDL3_PI+P3)+(RDL4_PI+P4) 溫度25-230
+
+
+
+time,62
+allsel
+tunif,50
+solve
+
+time,63
+allsel
+tunif,100
+solve
+
+time,64
+allsel
+tunif,150
+solve
+
+time,65
+allsel
+tunif,200
+solve
+
+time,66
+allsel
+tunif,230
+solve
+
+!選擇glass++SiNx+PI(release layer)+(BS_UBM_PI+PI)+(RDL_P2+P2)+(RDL3_PI+P3)+(RDL4_PI+P4)+RM5 溫度230-25
+
+time,67
+allsel,all
+ekill,all
+
+esel,s,cent,z,0,(z1+t7+t8+t9+t10+t11+t12+t13)
+ealive,all
+allsel
+tunif,230
+solve
+
+time,68
+allsel
+tunif,200
+solve
+
+time,69
+allsel
+tunif,150
+solve
+
+time,70
+allsel
+tunif,100
+solve
+
+time,71
+allsel
+tunif,50
+solve
+
+time,72  !!! final
+allsel
+tunif,25
+solve
+
+rescontrol,define,72,last
+parsav,all,parameter,txt
+
+/POST1
+Layer_count = 2
+*dim,layer_stress,table,Layer_count,1
+*do,i,1,Layer_count,1
+ESEL , S, MAT, , i
+NSORT,S,EQV,0,0,ALL    !Sorts nodal data   ! 0: Sort into descending order 降序排列, 0: Sort according to real value ,ALL: all nodes
+*GET,node_num,SORT,0,IMAX  ! Retrieves a value and stores it as a scalar parameter or part of an array parameter 
+*GET,stress,NODE,node_num,S,EQV
+layer_stress(i, 0) = i
+layer_stress(i, 1) = stress
+*enddo
+
+
+/OUTPUT
+
+!*CFOPEN,layer_stress,txt    !Opens a "command" file.
+!*VWRITE,layer_stress(1,0),layer_stress(1,1)  !Writes data to a file in a formatted sequence
+!%14.5G %14.5G
+!ESEL , S, MAT, , i
+!*CFCLOSE
+
+
+/post1
+NSEL , S, Loc, X, panel_width / 2    !Selects a subset of nodes, S : Select a new set (default). 
+                                     !Loc : X, Y, or Z location in the active coordinate system.
+NSEL , R, Loc, Y, panel_length / 2   !R : Reselect a set from the current set  
+NSEL , R, Loc, Z, z0
+*get,node_num,node,,num,min
+*get,node_high_UZ,NODE,node_num,U,Z
+NSEL , S, Loc, X, 0
+NSEL , R, Loc, Y, 0
+NSEL , R, Loc, Z, 0
+*get,node_num,node,,num,min
+*get,node_low_UZ,NODE,node_num,U,Z
+PARSAV,SCALAR,'warpage_UZ.txt',' ',' '
+finish

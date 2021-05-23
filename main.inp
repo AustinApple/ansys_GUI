@@ -1,26 +1,26 @@
 finish
 /clear
 /prep7
-/nerr,,99999999
+/nerr,,99999999B
 
 et,1,solid185
 
 /input,parameter,inp
 
 !定義各層厚度----------(5)
-*dim,t_z,ARRAY,1,layer
+*dim,t_z,ARRAY,1,layer       ! define an array named t_z    shape = (1, layer)
 *do,i,1,layer,1
 t_z(1,%i%)=t%i%   
 *enddo
 
 !定義各層名稱----------(6)
-*dim,layer_name,string,1,layer 
+*dim,layer_name,string,1,layer    ! define an array named layer_name   shape = (1, layer)
 *do,i,1,layer,1
 layer_name(1,%i%)=t_name%i%   
 *enddo
 
-!定義各層切割精度----------(7)
-*dim,mesh_z,ARRAY,1,layer 
+!定義各層切割精度----------(7)      
+*dim,mesh_z,ARRAY,1,layer         ! define an array named mesh_z   shape = (1, layer)
 *do,i,1,layer,1
 mesh_z(1,%i%)=t_mesh%i%   
 *enddo
@@ -31,21 +31,20 @@ z0=0
 z%I%=z%I-1%+t_z(1,%i%)
 *enddo
 !----------! 從Z方向建立一個1/4的平版
-blc4,0,0,panel_width/2,panel_length/2,z%layer%
-save
+blc4,0,0,panel_width/2,panel_length/2,z%layer%    
 !----Z方向切割----!
 csys,0
 wpcsys,,0
 *do,i,1,layer-1,1
-	wpoffs,0,0,t_z(1,%i%)
-	vsbw,all
+	wpoffs,0,0,t_z(1,%i%)       ! offsets the working plane.
+	vsbw,all                    ! Subtracts intersection of the working plane from volumes (divides volumes).
 *enddo
 !--------Z方向線段切精細度。-------!
-csys,0
-wpcsys,,0
-*do,i,1,layer,1
-lsel,s,length,,t_z(1,%i%)
-lesize,all,,,mesh_z(1,%i%)
+csys,0         ! activates a previously defined coordinate system -0 cartesian
+wpcsys,,0      ! define the working plane location based on a coordinate system.
+*do,i,1,layer,1   
+lsel,s,length,,t_z(1,%i%)      ! selects a subset of lines.
+lesize,all,,,mesh_z(1,%i%)     ! specifies the divisions and spacing ratio on unmeshed lines. # of piece
 *enddo
 
 !--------XY方向線段切精細度。-------!
@@ -55,17 +54,17 @@ allsel
 lsel,s,length,,panel_length/2
 lesize,all,,,y_cut
 allsel
-!----------!體積命名
+!----------!各層命名
 *do,i,1,layer,1
-vsel,s,loc,z,z%i-1%,z%i%
-cm,layer_name(1,%i%),volu
+vsel,s,loc,z,z%i-1%,z%i%     !  selects a subset of volumes.
+cm,layer_name(1,%i%),volu    !  Groups geometry items into a component.
 *enddo
 allsel
 save
 
 !----------!給定材料參數
 *do,i,1,layer,1
-mp,reft,%i%,process_%i%
+mp,reft,%i%,process_%i%      ! Defines a linear material property as a constant or a function of temperature.
 mp,  ex,%i%,mat_ex_%i%
 mp,prxy,%i%,mat_prxy_%i%
 mp,ctex,%i%,mat_ctex_%i%
@@ -73,20 +72,20 @@ mp,ctex,%i%,mat_ctex_%i%
 
 !----------!mesh
 *do,i,1,layer,1
-cmsel,s,layer_name(1,%i%),volu
-type,1
-mat,%i%
-mshape,0
-mshkey,1
-vmesh,all
+cmsel,s,layer_name(1,%i%),volu    ! Selects a subset of components and assemblies.
+type,1     ! Sets the element type attribute pointer.
+mat,%i%    ! Sets the element material attribute pointer.
+mshape,0   ! specifies the element shape to be used for meshing.
+mshkey,1   ! Specifies whether free meshing or mapped meshing should be used to mesh a model.
+vmesh,all  ! Generates nodes and volume elements within volumes.
 allsel
 *enddo
 
 !----------!元素命名
 *do,i,1,layer,1
-cmsel,s,layer_name(1,%i%),volu
-eslv,s
-cm,layer_name(1,%i%),elem
+cmsel,s,layer_name(1,%i%),volu    ! Selects a subset of components and assemblies.
+eslv,s                            ! Selects elements associated with the selected volumes.
+cm,layer_name(1,%i%),elem         ! Groups geometry items into a component.
 *enddo
 alls
 save

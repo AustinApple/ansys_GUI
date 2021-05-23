@@ -448,7 +448,6 @@ class MyWindow_1(QMainWindow, Page_first):
         super(MyWindow_1, self).__init__(parent)
         self.setupUi(self)
 
-
 class MyWindow_2(QMainWindow, Page_second):
     def __init__(self, num_layer, parent=None):
         super(MyWindow_2, self).__init__(parent)
