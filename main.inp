@@ -49,10 +49,10 @@ lesize,all,,,mesh_z(1,%i%)     ! specifies the divisions and spacing ratio on un
 
 !--------XY方向線段切精細度。-------!
 lsel,s,length,,panel_width/2
-lesize,all,,,x_cut
+lesize,all,,,100
 allsel
 lsel,s,length,,panel_length/2
-lesize,all,,,y_cut
+lesize,all,,,200
 allsel
 !----------!各層命名
 *do,i,1,layer,1
