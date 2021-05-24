@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import os
+import subprocess
 
 class Page_first(object): 
     def setupUi(self, MainWindow):
@@ -131,7 +132,7 @@ class Page_first(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_3.setText(_translate("MainWindow", "PLP Size"))
-        self.label_4.setText(_translate("MainWindow", "Number of Layers (RDL)"))
+        self.label_4.setText(_translate("MainWindow", "Number of Layers"))
         self.pushButton_8.setText(_translate("MainWindow", "Apply"))
         self.pushButton_9.setText(_translate("MainWindow", "Cancel"))
         self.checkBox.setText(_translate("MainWindow", "Yes"))
@@ -166,6 +167,13 @@ class Page_first(object):
 
 
         with open('parameter_test.inp', 'a') as file:
+
+            file.write("!--------------------Job name-------------------\n")
+            file.write("finish\n")
+            file.write("/filname,"+str(self.lineEdit.text())+",1\n")
+
+            file.write("!--------------------Choose to function(ON/OFF)----------------\n")
+            file.write("KEYOPT,1,2,2\n")
 
             file.write("!--------------------Panel size-------------------\n")
 
@@ -395,15 +403,15 @@ class Page_third(object):
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setGeometry(QtCore.QRect(100, 90, 181, 31))
         self.label.setObjectName("label")
-        self.textEdit = QtWidgets.QTextEdit(self.groupBox)
-        self.textEdit.setGeometry(QtCore.QRect(120, 160, 721, 31))
-        self.textEdit.setObjectName("textEdit")
+        # self.textEdit = QtWidgets.QTextEdit(self.groupBox)
+        # self.textEdit.setGeometry(QtCore.QRect(120, 160, 721, 31))
+        # self.textEdit.setObjectName("textEdit")
         self.label_2 = QtWidgets.QLabel(self.groupBox)
         self.label_2.setGeometry(QtCore.QRect(100, 300, 181, 31))
         self.label_2.setObjectName("label_2")
-        self.textEdit_2 = QtWidgets.QTextEdit(self.groupBox)
-        self.textEdit_2.setGeometry(QtCore.QRect(120, 350, 721, 31))
-        self.textEdit_2.setObjectName("textEdit_2")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit_2.setGeometry(QtCore.QRect(120, 350, 721, 31))
+        self.lineEdit_2.setObjectName("lineEdit_2")
         self.pushButton = QtWidgets.QPushButton(self.groupBox)
         self.pushButton.setGeometry(QtCore.QRect(120, 470, 171, 61))
         self.pushButton.setObjectName("pushButton")
@@ -421,7 +429,7 @@ class Page_third(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.groupBox.setTitle(_translate("Form", "Setting information"))
-        self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">Ansys程式路徑</span></p></body></html>"))
+        # self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">Ansys程式路徑</span></p></body></html>"))
         self.label_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">存檔路徑</span></p></body></html>"))
         self.pushButton.setText(_translate("Form", "Save"))
         self.pushButton_2.setText(_translate("Form", "Back"))
@@ -429,13 +437,16 @@ class Page_third(object):
 
         # this is for click action
         self.pushButton_2.clicked.connect(self.toPage_2)
-        #self.pushButton_3.clicked.connect(self.run)
+        self.pushButton_3.clicked.connect(self.run)
 
 
     
-    # def run(self):
-    #     os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\main.inp" -o "C:\Users\user\Desktop\pyqt_ansys\test.out')
-    #     os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys\test" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\test\eq_CTE_0222_SiNx_thickness_0.8" -o "C:\Users\user\Desktop\pyqt_ansys\test\test.out')
+    def run(self):
+        #os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys\example" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\example\main.inp" -o "C:\Users\user\Desktop\pyqt_ansys\example\test.out"')
+        #os.system('cmd /k \"C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe\" -p ansys -np 4 -dir \"C:/Users/user/Desktop/pyqt_ansys/example\" -j \"test\" -s noread -l en-us -b -i \"C:/Users/user/Desktop/pyqt_ansys/example/main.inp\" -o \"C:/Users/user/Desktop/pyqt_ansys/example/test.out\"')
+        #os.system('"C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe" -p ansys -np 4 -dir "C:/Users/user/Desktop/pyqt_ansys/example"')
+        cmd = ["C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe", "-p", "ansys", "-np", "4", "-dir", str(self.lineEdit_2.text()), "-j", "test", "-s", "noread", "-l", "en-us", "-b", "-i", str(self.lineEdit_2.text())+"/main.inp", "-o", str(self.lineEdit_2.text())+"/test.out"]
+        subprocess.call(cmd)
     def toPage_2(self):
         self.w = MyWindow_2(num_layer=str(self.num_layer))
         self.w.show()
@@ -448,13 +459,13 @@ class MyWindow_1(QMainWindow, Page_first):
         super(MyWindow_1, self).__init__(parent)
         self.setupUi(self)
 
+
 class MyWindow_2(QMainWindow, Page_second):
     def __init__(self, num_layer, parent=None):
         super(MyWindow_2, self).__init__(parent)
         self.num_layer = num_layer
         self.setupUi(self)
-        
-        self.comboBox.addItem("glass")
+
         for i in range(int(self.num_layer)):
             self.comboBox.addItem(str(i+1))
 
