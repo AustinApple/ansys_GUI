@@ -166,12 +166,13 @@ class Page_first(object):
         num_layer = self.comboBox_2.currentText()
 
 
-        with open('parameter_test.inp', 'a') as file:
+        with open('parameter.inp', 'a') as file:
 
             file.write("!--------------------Job name-------------------\n")
             file.write("finish\n")
             file.write("/filname,"+str(self.lineEdit.text())+",1\n")
-
+            file.write("/prep7\n")
+            
             file.write("!--------------------Choose to function(ON/OFF)----------------\n")
             file.write("KEYOPT,1,2,2\n")
 
@@ -188,7 +189,7 @@ class Page_first(object):
                 file.write("panel_length=1500\n")
             
             file.write("!-------------------Number of layers -------------------\n")
-            file.write("num_layer="+str(self.comboBox_2.currentText())+str("\n"))
+            file.write("layer="+str(self.comboBox_2.currentText())+str("\n"))
 
 
 
@@ -336,9 +337,9 @@ class Page_second(object):
         self.dict_temp["process_"+str(self.comboBox.currentText())] = self.lineEdit_4.text()  # process temperature
 
         self.dict_ex["mat_ex_"+str(self.comboBox.currentText())] = self.lineEdit_5.text()  # young's modulus
-        self.dict_prxy["mat_prxy_"+str(self.comboBox.currentText())] = self.lineEdit_6.text()  # poisson ratio
-        self.dict_ctex["mat_ctex_"+str(self.comboBox.currentText())] = self.lineEdit_7.text()  # CTE
-        self.dict_density["mat_ctex_"+str(self.comboBox.currentText())] = self.lineEdit_8.text() # density
+        self.dict_prxy["mat_prxy_"+str(self.comboBox.currentText())] = self.lineEdit_7.text()  # poisson ratio
+        self.dict_ctex["mat_ctex_"+str(self.comboBox.currentText())] = self.lineEdit_6.text()  # CTE
+        self.dict_density["mat_density_"+str(self.comboBox.currentText())] = self.lineEdit_8.text() # density
 
 
 
@@ -348,7 +349,7 @@ class Page_second(object):
         self.hide()
 
     def toPage_3(self):
-        with open('parameter_test.inp', 'a') as file:
+        with open('parameter.inp', 'a') as file:
             
             file.write("!-------------------Thickness of each layer-------------------\n")
             for key, value in self.dict_thickness.items():
@@ -442,10 +443,10 @@ class Page_third(object):
 
     
     def run(self):
-        #os.system('cmd /k "C:\Program Files\ANSYS Inc\v192\ansys\bin\winx64\MAPDL.exe" -p ansys -np 4 -dir "C:\Users\user\Desktop\pyqt_ansys\example" -j "test" -s noread -l en-us -b -i "C:\Users\user\Desktop\pyqt_ansys\example\main.inp" -o "C:\Users\user\Desktop\pyqt_ansys\example\test.out"')
-        #os.system('cmd /k \"C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe\" -p ansys -np 4 -dir \"C:/Users/user/Desktop/pyqt_ansys/example\" -j \"test\" -s noread -l en-us -b -i \"C:/Users/user/Desktop/pyqt_ansys/example/main.inp\" -o \"C:/Users/user/Desktop/pyqt_ansys/example/test.out\"')
+        #os.system('cmd /k "C:\Program Files\ANSYS Inc\v170\ansys\bin\winx64\MAPDL.exe" -p ansys -dir "C:\Users\AUSTIN.WU\Desktop\pyqt_apdl" -j "test" -s noread -l en-us -b -i "C:\Users\AUSTIN.WU\Desktop\pyqt_apdl\main.inp" -o "C:\Users\AUSTIN.WU\Desktop\pyqt_apdl\test.out"')
+        #os.system('cmd /k \"C:/Program Files/ANSYS Inc/v170/ansys/bin/winx64/MAPDL.exe\" -p ansys -np 4 -dir \"C:/Users/user/Desktop/pyqt_ansys/example\" -j \"test\" -s noread -l en-us -b -i \"C:/Users/user/Desktop/pyqt_ansys/example/main.inp\" -o \"C:/Users/user/Desktop/pyqt_ansys/example/test.out\"')
         #os.system('"C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe" -p ansys -np 4 -dir "C:/Users/user/Desktop/pyqt_ansys/example"')
-        cmd = ["C:/Program Files/ANSYS Inc/v192/ansys/bin/winx64/MAPDL.exe", "-p", "ansys", "-np", "4", "-dir", str(self.lineEdit_2.text()), "-j", "test", "-s", "noread", "-l", "en-us", "-b", "-i", str(self.lineEdit_2.text())+"/main.inp", "-o", str(self.lineEdit_2.text())+"/test.out"]
+        cmd = ["C:/Program Files/ANSYS Inc/v170/ansys/bin/winx64/MAPDL.exe", "-p", "ansys", "-dir", str(self.lineEdit_2.text()), "-j", "test", "-s", "noread", "-l", "en-us", "-b", "-i", str(self.lineEdit_2.text())+"/main.inp", "-o", str(self.lineEdit_2.text())+"/test.out"]
         subprocess.call(cmd)
     def toPage_2(self):
         self.w = MyWindow_2(num_layer=str(self.num_layer))
@@ -478,8 +479,8 @@ class MyWindow_3(QMainWindow, Page_third):
 
 if __name__ == '__main__':
     
-    if os.path.exists("parameter_test.inp"):
-        os.remove("parameter_test.inp")
+    if os.path.exists("parameter.inp"):
+        os.remove("parameter.inp")
     
     app = QApplication(sys.argv)
     myWin = MyWindow_1()
