@@ -1,0 +1,69 @@
+!--------------------Job name-------------------
+finish
+/filname,test,1
+/prep7
+!--------------------Choose to function(ON/OFF)----------------
+KEYOPT,1,2,2
+!--------------------Panel size-------------------
+panel_width=370
+panel_length=470
+!-------------------Number of layers -------------------
+layer=7
+!-------------------Thickness of each layer-------------------
+t1=1.1
+t2=0.8e-3
+t3=0.6e-3
+t4=7e-3
+t5=4e-3
+t6=4e-3
+t7=3e-3
+!-------------------Name of each layer----------------------
+t_name1='layer_glass'
+t_name2='layer_SiNx'
+t_name3='layer_release'
+t_name4='layer_RM1'
+t_name5='layer_RP1'
+t_name6='layer_RM2'
+t_name7='layer_RP2'
+!-------------------Cutting accuracy of each layer----------------------
+t_mesh1=10
+t_mesh2=2
+t_mesh3=2
+t_mesh4=2
+t_mesh5=2
+t_mesh6=2
+t_mesh7=2
+!-------------------Process temperature parameters----------------------
+process_1=250
+process_2=250
+process_3=250
+process_4=250
+process_5=250
+process_6=250
+process_7=250
+!-------------------Material parameters----------------------
+!young's modulus
+mat_ex_1=70e3
+mat_ex_2=147.78e3
+mat_ex_3=5e3
+mat_ex_4=17.978e3
+mat_ex_5=3.1e3
+mat_ex_6=34.4e3
+mat_ex_7=3.1e3
+!poisson ration
+mat_prxy_1=0.28
+mat_prxy_2=0.28
+mat_prxy_3=0.28
+mat_prxy_4=0.35
+mat_prxy_5=0.28
+mat_prxy_6=0.35
+mat_prxy_7=0.28
+!CTE
+mat_ctex_1=9.1e-6
+mat_ctex_2=2.11e-6
+mat_ctex_3=60e-6
+mat_ctex_4=19.24e-6
+mat_ctex_5=41e-6
+mat_ctex_6=17.86e-6
+mat_ctex_7=41e-6
+!Density
