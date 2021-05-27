@@ -27,12 +27,12 @@ t_name6='layer_RM2'
 t_name7='layer_RP2'
 !-------------------Cutting accuracy of each layer----------------------
 t_mesh1=10
-t_mesh2=2
-t_mesh3=2
-t_mesh4=2
-t_mesh5=2
-t_mesh6=2
-t_mesh7=2
+t_mesh2=1
+t_mesh3=1
+t_mesh4=1
+t_mesh5=1
+t_mesh6=1
+t_mesh7=1
 !-------------------Process temperature parameters----------------------
 process_1=250
 process_2=250
