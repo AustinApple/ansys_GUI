@@ -1,7 +1,7 @@
 finish
 /clear
 /prep7
-/nerr,,99999999B
+/nerr,,99999999
 
 et,1,solid185
 
@@ -49,10 +49,10 @@ lesize,all,,,mesh_z(1,%i%)     ! specifies the divisions and spacing ratio on un
 
 !--------XY方向線段切精細度。-------!
 lsel,s,length,,panel_width/2
-lesize,all,,,100
+lesize,all,,,panel_width/2
 allsel
 lsel,s,length,,panel_length/2
-lesize,all,,,200
+lesize,all,,,panel_length/2
 allsel
 !----------!各層命名
 *do,i,1,layer,1
@@ -218,9 +218,6 @@ solve
 rescontrol,define,last,last
 parsav,all,parameter,txt
 finish
-
-
-
 
 
 
